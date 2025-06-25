@@ -53,6 +53,7 @@ export class ToolManager {
   // 应用工具到 MCP 服务器
   applyToServer(server: any): void {
     this.tools.forEach(tool => {
+      console.log(`Registering tool: ${tool.name}`);
       server.tool(
         tool.name,
         tool.description,
