@@ -1,0 +1,33 @@
+{
+  "name": "diagramly-mcp-serverless",
+  "version": "1.0.0",
+  "description": "A Cloudflare Worker MCP server with tools and prompts framework",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "wrangler build",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.1",
+    "agents": "^0.0.97",
+    "hono": "^4.8.2",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241218.0",
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "wrangler": "^4.21.0"
+  },
+  "keywords": [
+    "mcp",
+    "cloudflare",
+    "worker",
+    "serverless",
+    "model-context-protocol"
+  ],
+  "author": "",
+  "license": "MIT"
+}
