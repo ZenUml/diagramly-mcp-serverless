@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.13.1",
+    "@types/pako": "^2.0.3",
     "agents": "^0.0.97",
     "hono": "^4.8.2",
+    "pako": "^2.1.0",
     "zod": "^3.25.67"
   },
   "devDependencies": {

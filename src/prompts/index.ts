@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { codeReviewPrompt } from './code-review.js';
-import { generateDocsPrompt, optimizeCodePrompt, generateTestsPrompt, explainCodePrompt } from './examples.js';
 
 export interface PromptDefinition {
   name: string;
@@ -19,11 +18,6 @@ export interface PromptDefinition {
 // 3. 添加到下面的数组中
 export const promptRegistry: PromptDefinition[] = [
   codeReviewPrompt,
-  // 取消注释下面的行来启用示例 prompt
-  generateDocsPrompt,
-  optimizeCodePrompt,
-  generateTestsPrompt,
-  explainCodePrompt,
   // 在这里添加更多 prompt
 ];
 

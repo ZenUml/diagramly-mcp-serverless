@@ -1,6 +1,5 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { greetingTool } from './greeting.js';
-import { calculatorTool, timeTool } from './example.js';
+import { textDiagramToImageTool } from './text-diagram-to-image.js';
 
 export interface ToolDefinition {
   name: string;
@@ -15,11 +14,7 @@ export interface ToolDefinition {
 // 2. 导入工具
 // 3. 添加到下面的数组中
 export const toolRegistry: ToolDefinition[] = [
-  greetingTool,
-  // 取消注释下面的行来启用示例工具
-  // calculatorTool,
-  // timeTool,
-  // 在这里添加更多工具
+  textDiagramToImageTool,
 ];
 
 // 工具注册器类
