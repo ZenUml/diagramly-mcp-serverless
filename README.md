@@ -1,93 +1,101 @@
 # Diagramly MCP Serverless
 
-一个基于 Cloudflare Worker 的 Model Context Protocol (MCP) 服务器，使用 TypeScript 开发，支持 Streamable HTTP 传输协议。
+A Model Context Protocol (MCP) server built on Cloudflare Workers with TypeScript, supporting Streamable HTTP transport protocol.
 
-## 功能特性
+## Features
 
-- 🚀 基于 Cloudflare Workers 的无服务器架构
-- 📡 支持最新的 MCP Streamable HTTP 传输协议
-- 🛠️ 可扩展的工具框架
-- 📝 可扩展的提示模板框架
-- 🔧 TypeScript 类型安全
-- 🌐 CORS 支持
-- 💡 简单的项目结构，易于扩展
+- 🚀 Serverless architecture on Cloudflare Workers
+- 📡 Latest MCP Streamable HTTP transport protocol support
+- 🛠️ Extensible tools framework
+- 📝 Extensible prompts framework
+- 🔧 TypeScript type safety
+- 🌐 CORS support
+- 💡 Simple project structure, easy to extend
 
-## 项目结构
+## Project Structure
 
 ```
 diagramly-mcp-serverless/
 ├── src/
-│   └── index.ts          # 主要的 Worker 代码
-├── package.json          # 项目依赖
-├── tsconfig.json         # TypeScript 配置
-├── wrangler.toml         # Cloudflare Worker 配置
-└── README.md            # 项目说明
+│   ├── index.ts              # Main Worker entry point
+│   ├── tools/
+│   │   ├── index.ts          # Tools registry and manager
+│   │   └── mermaid-to-image.ts # Mermaid diagram to image tool
+│   └── prompts/
+│       ├── index.ts          # Prompts registry and manager
+│       └── mermaid-flowchart.ts # Mermaid flowchart prompt
+├── package.json              # Project dependencies
+├── tsconfig.json             # TypeScript configuration
+├── wrangler.jsonc            # Cloudflare Worker configuration
+└── README.md                 # Project documentation
 ```
 
-## 快速开始
+## Quick Start
 
-### 1. 安装依赖
+### 1. Local Development
 
 ```bash
-npm install
+npx wrangler dev
 ```
 
-### 2. 本地开发
+This will start the local development server, typically at `http://localhost:8787`
+
+### 2. Deploy to Cloudflare
 
 ```bash
-npm run dev
+npx wrangler deploy
 ```
 
-这将启动本地开发服务器，通常在 `http://localhost:8787`
-
-### 3. 部署到 Cloudflare
+### 4. Type Check
 
 ```bash
-npm run deploy
+npm run type-check
 ```
 
-## API 端点
+## API Endpoints
 
-- `POST /mcp` - MCP 协议通信端点
-- `GET /health` - 健康检查端点
-- `OPTIONS /*` - CORS 预检请求处理
+- `POST /mcp` - MCP protocol communication endpoint
+- `GET /health` - Health check endpoint
+- `OPTIONS /*` - CORS preflight request handling
 
-## 内置功能
+## Built-in Features
 
-### 工具 (Tools)
+### Tools
 
-当前包含一个示例工具：
+Currently includes:
 
-- **hello_world**: 简单的问候工具
-  - 参数: `name` (可选字符串)
-  - 功能: 返回个性化或通用问候语
+- **mermaid-to-image**: Convert Mermaid diagrams to images
+  - Parameters: `diagramCode` (string), `imageType` (optional: "png" | "svg")
+  - Function: Converts Mermaid diagram code to PNG or SVG images using Kroki service
 
-### 提示 (Prompts)
+### Prompts
 
-当前包含一个示例提示：
+Currently includes:
 
-- **empty_prompt**: 空提示模板
-  - 用于演示提示框架结构
+- **mermaid-flowchart**: Convert content to Mermaid flowchart
+  - Parameters: `content` (string)
+  - Function: Generates prompts to convert user content into Mermaid flowchart diagrams
 
-## 扩展指南
+## Extension Guide
 
-### 添加新工具
+### Adding New Tools
 
-在 `src/index.ts` 的 `registerTools` 函数中添加新工具：
+1. Create a new tool file in `src/tools/`
+2. Define your tool following the `ToolDefinition` interface
+3. Add it to the `toolRegistry` in `src/tools/index.ts`
+
+Example:
 
 ```typescript
-server.registerTool(
-  "your_tool_name",
-  {
-    title: "Your Tool Title",
-    description: "Tool description",
-    inputSchema: {
-      param1: z.string().describe("Parameter description"),
-      param2: z.number().optional().describe("Optional parameter")
-    }
+export const myNewTool: ToolDefinition = {
+  name: "my-new-tool",
+  description: "Description of what this tool does",
+  inputSchema: {
+    param1: z.string(),
+    param2: z.number().optional()
   },
-  async ({ param1, param2 }) => {
-    // 工具实现逻辑
+  handler: async ({ param1, param2 }) => {
+    // Tool implementation logic
     return {
       content: [{
         type: "text",
@@ -95,90 +103,45 @@ server.registerTool(
       }]
     };
   }
-);
+};
 ```
 
-### 添加新提示
+### Adding New Prompts
 
-在 `src/index.ts` 的 `registerPrompts` 函数中添加新提示：
+1. Create a new prompt file in `src/prompts/`
+2. Define your prompt following the `PromptDefinition` interface
+3. Add it to the `promptRegistry` in `src/prompts/index.ts`
+
+Example:
 
 ```typescript
-server.registerPrompt(
-  "your_prompt_name",
-  {
-    title: "Your Prompt Title",
-    description: "Prompt description",
-    arguments: [
-      {
-        name: "arg1",
-        description: "Argument description",
-        required: true
-      }
-    ]
+export const myNewPrompt: PromptDefinition = {
+  name: "my-new-prompt",
+  config: {
+    title: "My New Prompt",
+    description: "Description of what this prompt does",
+    argsSchema: { content: z.string() }
   },
-  async (args) => {
-    return {
-      messages: [{
-        role: "user",
-        content: {
-          type: "text",
-          text: `Prompt with argument: ${args.arg1}`
-        }
-      }]
-    };
-  }
-);
+  handler: ({ content }) => ({
+    messages: [{
+      role: "user",
+      content: {
+        type: "text",
+        text: `Your prompt template here: ${content}`
+      }
+    }]
+  })
+};
 ```
 
-## 技术栈
+## Dependencies
 
-- **运行时**: Cloudflare Workers
-- **语言**: TypeScript
-- **MCP SDK**: @modelcontextprotocol/sdk (v1.13.1)
-- **传输协议**: Streamable HTTP
-- **验证**: Zod
-- **构建工具**: Wrangler
+- **@modelcontextprotocol/sdk**: MCP framework core
+- **agents**: MCP agent library
+- **hono**: Web framework for Cloudflare Workers
+- **zod**: Data validation library
+- **pako**: Compression library for Mermaid diagrams
 
-## 配置
-
-### 环境变量
-
-在 `wrangler.toml` 中可以配置环境变量：
-
-```toml
-[vars]
-ENVIRONMENT = "production"
-API_KEY = "your-api-key"
-```
-
-### 存储选项
-
-如需要持久化存储，可以在 `wrangler.toml` 中配置：
-
-- **KV Storage**: 键值存储
-- **D1 Database**: SQLite 数据库
-- **R2 Storage**: 对象存储
-
-## 开发命令
-
-```bash
-# 本地开发
-npm run dev
-
-# 构建项目
-npm run build
-
-# 部署到 Cloudflare
-npm run deploy
-
-# 类型检查
-npm run type-check
-```
-
-## 许可证
+## License
 
 MIT License
-
-## 贡献
-
-欢迎提交 Issue 和 Pull Request！
