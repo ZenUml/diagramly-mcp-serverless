@@ -1,5 +1,5 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { diagramCodeToImageTool } from './diagram-code-to-image.js';
+import { mermaidToImageTool } from './mermaid-to-image.js';
 
 export interface ToolDefinition {
   name: string;
@@ -14,7 +14,7 @@ export interface ToolDefinition {
 // 2. 导入工具
 // 3. 添加到下面的数组中
 export const toolRegistry: ToolDefinition[] = [
-  diagramCodeToImageTool,
+  mermaidToImageTool,
 ];
 
 // 工具注册器类

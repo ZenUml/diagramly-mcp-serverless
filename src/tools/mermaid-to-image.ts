@@ -10,13 +10,14 @@ function uint8ArrayToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-export const diagramCodeToImageTool: ToolDefinition = {
-  name: "diagram-code-to-image",
-  description: "将 Mermaid 图表代码转换为 PNG 图像",
+export const mermaidToImageTool: ToolDefinition = {
+  name: "mermaid-to-image",
+  description: "Convert mermaid code to image, support png and svg. Default png if not specified.",
   inputSchema: {
-      diagramCode: z.string()
+      diagramCode: z.string(),
+      imageType: z.enum(["png", "svg"]).optional()
   },
-  handler: async ({ diagramCode }) => {
+  handler: async ({ diagramCode, imageType }) => {
     try {
       console.log(`start to compress diagram code: ${diagramCode}`)
       const data = Buffer.from(diagramCode, 'utf8') 
@@ -27,10 +28,12 @@ export const diagramCodeToImageTool: ToolDefinition = {
         .toString('base64') 
         .replace(/\+/g, '-').replace(/\//g, '_') 
 
-      // 步骤 4: 创建完整的 Kroki URL
-      const krokiUrl = `https://kroki.io/mermaid/png/${encodedValue}`;
-      console.log("Generated Kroki URL:", krokiUrl);
+      // if imageType cannot be found, use png by default
+      imageType = imageType || "png"
 
+      // 步骤 4: 创建完整的 Kroki URL
+      const krokiUrl = `https://kroki.io/mermaid/${imageType}/${encodedValue}`;
+      console.log("Generated Kroki URL:", krokiUrl);
 
       // 步骤 5: 使用 fetch 从 Kroki 获取图像数据
       const response = await fetch(krokiUrl);
@@ -48,14 +51,14 @@ export const diagramCodeToImageTool: ToolDefinition = {
           {
             type: "image",
             data: base64Data,
-            mimeType: "image/png",
+            mimeType: `image/${imageType}`,
             alt_text: "Mermaid diagram generated from code"
           }
         ]
       };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      throw new Error(`图表转换失败: ${errorMessage}`);
+      throw new Error(`Failed to convert image: ${errorMessage}`);
     }
   }
 };
