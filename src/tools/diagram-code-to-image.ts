@@ -10,8 +10,8 @@ function uint8ArrayToBase64(bytes: Uint8Array): string {
   return btoa(binary);
 }
 
-export const textDiagramToImageTool: ToolDefinition = {
-  name: "text-diagram-to-image",
+export const diagramCodeToImageTool: ToolDefinition = {
+  name: "diagram-code-to-image",
   description: "将 Mermaid 图表代码转换为 PNG 图像",
   inputSchema: {
       diagramCode: z.string()

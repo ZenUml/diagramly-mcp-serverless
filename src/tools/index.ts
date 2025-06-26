@@ -1,5 +1,5 @@
 import { Tool } from '@modelcontextprotocol/sdk/types.js';
-import { textDiagramToImageTool } from './text-diagram-to-image.js';
+import { diagramCodeToImageTool } from './diagram-code-to-image.js';
 
 export interface ToolDefinition {
   name: string;
@@ -14,7 +14,7 @@ export interface ToolDefinition {
 // 2. 导入工具
 // 3. 添加到下面的数组中
 export const toolRegistry: ToolDefinition[] = [
-  textDiagramToImageTool,
+  diagramCodeToImageTool,
 ];
 
 // 工具注册器类
