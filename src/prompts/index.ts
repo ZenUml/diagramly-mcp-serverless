@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { codeReviewPrompt } from './code-review.js';
+import { mermaidFlowChartPrompt } from './mermaid-flowchart.js';
 
 export interface PromptDefinition {
   name: string;
@@ -17,7 +17,7 @@ export interface PromptDefinition {
 // 2. 导入 prompt
 // 3. 添加到下面的数组中
 export const promptRegistry: PromptDefinition[] = [
-  codeReviewPrompt,
+  mermaidFlowChartPrompt,
   // 在这里添加更多 prompt
 ];
 
